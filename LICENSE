@@ -1,0 +1,29 @@
+Copyright (c) 2026 AdWon24. All rights reserved.
+
+이 저장소(소스 코드, 문서, 그리고 Releases에 첨부된 컴파일된 라이브러리(AAR) 포함)는
+AdWon24가 저작권을 보유합니다.
+
+별도의 오픈소스 라이선스를 부여하지 않습니다. 즉:
+- 이 저장소의 내용을 열람하고, 문서(연동규격서)에 따라 Releases에 첨부된 AAR을
+  자신의 애플리케이션에 라이브러리로 포함시켜 사용하는 것은 허용됩니다.
+- 그 외의 사용 — 소스 코드(샘플 앱 포함)의 재배포, 수정본 배포, 상업적 재판매,
+  AAR의 역컴파일/역공학을 통한 재구현 등 — 은 AdWon24의 사전 서면 동의 없이는
+  허용되지 않습니다.
+
+라이선스 조건에 대해 문의가 있으면 별도 채널로 AdWon24에 연락해 주세요.
+
+---
+
+Copyright (c) 2026 AdWon24. All rights reserved.
+
+This repository (including its source code, documentation, and the compiled library
+(AAR) attached to its Releases) is copyrighted by AdWon24.
+
+No open-source license is granted. Specifically:
+- You may view this repository and include the AAR attached to its Releases as a
+  library in your own application, per the accompanying integration guide.
+- Any other use — redistributing or publishing modified versions of the source code
+  (including the sample app), commercial resale, or reverse-engineering the AAR to
+  reproduce its functionality — requires AdWon24's prior written consent.
+
+For licensing inquiries, please contact AdWon24 through your existing point of contact.

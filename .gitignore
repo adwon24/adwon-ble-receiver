@@ -1,0 +1,20 @@
+*.iml
+.gradle/
+# local.properties는 최상위뿐 아니라 sample/ 등 하위 Gradle 프로젝트에도 각자 생기므로
+# 슬래시 없이 적어 모든 깊이에서 무시되게 한다.
+local.properties
+.idea/
+.DS_Store
+# build/ 산출물도 최상위(/build/)나 한 단계 아래(*/build/)뿐 아니라 sample/app/build/처럼
+# 더 깊은 곳에도 생기므로(실제로 sample/app/build/가 이미 생성된 것을 확인함) 모든 깊이에서
+# 무시되도록 슬래시 없는 형태로 통일한다.
+build/
+/captures
+.externalNativeBuild
+.cxx
+.kotlin/
+
+# release AAR은 이제 library/ 폴더에 직접 커밋한다(더 이상 Releases 페이지/샘플 내부
+# libs/ 폴더에서 받는 방식을 쓰지 않음) — 그래서 *.aar을 여기서 무시하지 않는다.
+# Claude가 삭제 권한이 없어 대신 여기로 옮겨둔 파일들 — 확인 후 폴더째 지우면 됨.
+_to_delete/
