@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     // 유효하지 않은 값을 넣으면 실제로 거부된다(연동규격서 4절) — 정식 App Code는
     // 별도 채널로 발급받아 교체해야 한다.
-    private val demoAppCode = "여기에_발급받은_App_Code를_넣으세요"
+    private val demoAppCode = "e80a61a8-b924-4c17-bb3c-d8dafe27f106" // 테스트 키입니다. 여기에_발급받은_App_Code를_넣으세요
 
     // Logger 주입은 선택 사항이다 — 아무것도 넘기지 않으면 아무 동작도 하지 않는
     // NoOpLogger가 기본값이다(연동규격서 6.1절).
