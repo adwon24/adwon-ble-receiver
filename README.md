@@ -234,9 +234,8 @@ fun interface Logger {
   `adb logcat | grep adwon_ble` (PowerShell에서는 `adb logcat | findstr adwon_ble`)로 SDK
   로그만 걸러볼 수 있습니다.
 
-호스트가 주입한 `Logger`가 받는 로그와는 별개로, SDK는 배포 시점에 정해지는 내부 전용
-진단 로그(파일 기록)를 갖고 있습니다. 호스트는 이 내부 로그의 on/off를 알거나 바꿀 수
-없습니다 — 대신 그 파일의 "위치"만 아래 방법으로 얻을 수 있습니다.
+호스트가 주입한 `Logger`가 받는 로그와는 별개로, SDK는 내부적으로 진단 로그를 파일로도
+남깁니다. 이 파일의 "위치"는 아래 방법으로 얻을 수 있습니다.
 
 #### 6.2 진단 로그 파일 공유 가이드
 
@@ -245,8 +244,7 @@ val logFile = receiverDiagnosticLogFile(context)
 ```
 
 이 함수는 앱 내부 저장소의 `filesDir/adwon_ble_logs/rx_log.txt`를 가리키는 `File`을
-반환합니다. 실제로 로그를 기록할지는 SDK 배포 시점 상수로 결정되며 호스트가 알 수 없으므로,
-**공유 전에 반드시 파일 존재/크기를 확인**해야 합니다.
+반환합니다. **공유 전에 반드시 파일 존재/크기를 확인**해야 합니다.
 
 ```kotlin
 if (!logFile.exists() || logFile.length() == 0L) {
