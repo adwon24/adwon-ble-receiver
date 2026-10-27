@@ -35,7 +35,7 @@ dependencies {
     // 연동규격서 2절과 동일한 방식 — release AAR을 파일로 직접 참조한다. 저장소 최상위
     // library/ 폴더의 AAR을 상대 경로로 그대로 참조하므로(별도 복사 불필요), 버전을 올릴 때는
     // library/ 폴더의 파일명과 이 경로를 함께 갱신하면 된다.
-    implementation(files("../../library/adwon-ble-receiver-1.0.0.aar"))
+    implementation(files("../../library/adwon-ble-receiver-1.0.1.aar"))
 
     // AAR을 파일로 직접 참조하면 POM이 없어 전이 의존성이 자동으로 따라오지 않으므로,
     // 호스트 앱(이 샘플)이 직접 선언한다(연동규격서 2절 참조).

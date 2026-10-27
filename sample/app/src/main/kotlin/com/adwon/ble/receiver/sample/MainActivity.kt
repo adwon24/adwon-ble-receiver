@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.adwon.ble.receiver.AdWonReceiverSdk
+import com.adwon.ble.receiver.AdWonServer
 import com.adwon.ble.receiver.ReceiverStartListener
 import com.adwon.ble.receiver.ReceiverStartResult
 import com.adwon.ble.receiver.internal.common.LogcatLogger
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     // 유효하지 않은 값을 넣으면 실제로 거부된다(연동규격서 4절) — 정식 App Code는
     // 별도 채널로 발급받아 교체해야 한다.
-    private val demoAppCode = "e80a61a8-b924-4c17-bb3c-d8dafe27f106" // 테스트 키입니다. 여기에_발급받은_App_Code를_넣으세요
+    private val demoAppCode = "903c8458-6fe8-4250-9322-35a96efe968c" // 테스트 키입니다. 여기에_발급받은_App_Code를_넣으세요
 
     // Logger 주입은 선택 사항이다 — 아무것도 넘기지 않으면 아무 동작도 하지 않는
     // NoOpLogger가 기본값이다(연동규격서 6.1절).
@@ -74,6 +75,9 @@ class MainActivity : AppCompatActivity() {
             serialId = demoSerialId,
             appCode = demoAppCode,
             hostActivity = this,
+            // 이 샘플의 demoAppCode는 개발 서버용 테스트 키라 개발 서버로 붙는다. 실제 매장 배포 시에는
+            // AdWonServer.PRODUCTION(생략 시 기본값)과 상용 App Code로 바꾼다(연동규격서 4.1절).
+            server = AdWonServer.DEVELOPMENT,
             listener = ReceiverStartListener { result ->
                 // 항상 메인 스레드에서 호출되므로 곧바로 UI를 갱신해도 안전하다.
                 when (result) {

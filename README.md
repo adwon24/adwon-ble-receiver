@@ -6,26 +6,25 @@
 이 저장소는 **수신부 SDK 전용**입니다. 신호를 내보내는 송신부 SDK는 별도 저장소에서
 배포됩니다 — 두 SDK를 실제로 도입해 사용하는 회사가 서로 다르기 때문입니다.
 
-> [!WARNING]
-> **현재 배포판은 테스트(개발) 서버를 사용합니다 — 추후 SDK 교체가 필요합니다.**
+> [!IMPORTANT]
+> **1.0.1부터 개발/상용 서버를 직접 고를 수 있습니다 — 1.0.0을 쓰고 계시면 교체해주세요.**
 >
-> 이 SDK(연동규격서 v1.0 / AAR 1.0.0)가 내부적으로 통신하는 서버는 아직 정식 상용 서버가
-> 아니라 **테스트(개발) 서버**입니다. 상용 서버가 준비되면 그 주소로 전환된 **새 버전의
-> SDK가 이 저장소를 통해 배포될 예정**이며, 그 시점에는 지금 연동해두신 AAR을 반드시
-> **새 버전으로 교체**해주셔야 합니다.
+> 상용 서버가 열려, `start()`의 `server` 파라미터로 접속할 서버를 고르게 바뀌었습니다
+> ([4.1절](#41-개발상용-서버-선택)). 연동 개발 중에는 `AdWonServer.DEVELOPMENT`(개발 서버)를,
+> 실제 매장 배포 시에는 `AdWonServer.PRODUCTION`(상용 서버)을 쓰면 됩니다. **`server`를
+> 생략하면 상용 서버로 접속합니다.**
 >
-> 현재 버전을 교체하지 않고 계속 사용하시면, 상용 서버가 열린 뒤에도 이 SDK는 여전히
-> 테스트 서버로 요청을 보내기 때문에 App Code 검증/방문 기록 전송이 정상적으로 동작하지
-> 않습니다. 새 버전이 배포되면 이 저장소(및 별도 안내 채널)를 통해 공지드릴 예정이니,
-> **SDK 업데이트 공지를 반드시 확인하고 적용**해주세요.
+> 이전 버전(1.0.0)은 개발 서버로만 통신하도록 고정돼 있어 상용 서버를 쓸 수 없습니다.
+> AAR을 1.0.1 이상으로 교체하고, 개발 서버를 계속 쓰려면 `server = AdWonServer.DEVELOPMENT`를
+> 명시해주세요. App Code는 서버마다 따로 발급되므로 상용 서버용 App Code도 별도로 받으셔야 합니다.
 
 ## 이 저장소에 있는 것
 
-- **연동규격서**: 바로 이 페이지 아래([연동규격서 (v1.0)](#연동규격서-v10)) — 이 SDK를
+- **연동규격서**: 바로 이 페이지 아래([연동규격서 (v1.1)](#연동규격서-v11)) — 이 SDK를
   자신의 앱에 붙이는 데 필요한 모든 내용(권한, 공개 API, 예외 상황 등).
   **가장 먼저 이 문서를 읽어주세요.**
 - **release AAR**: [`library/`](./library/) 폴더에 실제 배포 파일이 그대로 들어있습니다
-  (예: `library/adwon-ble-receiver-1.0.0.aar`) — 버전은 파일명으로 구분합니다.
+  (예: `library/adwon-ble-receiver-1.0.1.aar`) — 버전은 파일명으로 구분합니다.
 - **샘플 앱**: [`sample/`](./sample/) — `library/`의 release AAR만 참조해 최소 연동
   코드가 어떤 모습인지 보여주는 예제 프로젝트. SDK 소스는 포함되어 있지 않습니다.
 
@@ -42,7 +41,7 @@
 
 ---
 
-## 연동규격서 (v1.0)
+## 연동규격서 (v1.1)
 
 > 대상 독자: 이 SDK(`adwon-ble-receiver`)를 자신의 앱에 붙이는 호스트 앱 개발자
 
@@ -76,7 +75,7 @@ Android 라이브러리입니다. 고객 폰에서 신호를 내보내는 별도
 | minSdk | 26 (Android 8.0) |
 | compileSdk / targetSdk | 35 |
 | 진입점 | `AdWonReceiverSdk` |
-| Release 버전 | 이 저장소 [`library/`](./library/) 폴더의 AAR 파일명을 따릅니다(예: `adwon-ble-receiver-1.0.0.aar`). |
+| Release 버전 | 이 저장소 [`library/`](./library/) 폴더의 AAR 파일명을 따릅니다(예: `adwon-ble-receiver-1.0.1.aar`). |
 
 호스트 앱 `build.gradle.kts`에 아래와 같이 추가하세요.
 
@@ -119,7 +118,8 @@ Plugin의 매니페스트 병합(manifest merge)으로 호스트 앱에 **자동
 sdk.start(
     serialId = "table-01",
     appCode = "발급받은 App Code",
-    hostActivity = this // 현재 Activity — 권한/배터리 최적화 자동 요청에 사용됨
+    hostActivity = this, // 현재 Activity — 권한/배터리 최적화 자동 요청에 사용됨
+    server = AdWonServer.DEVELOPMENT // 개발 중에는 개발 서버. 생략하면 상용 서버(4.1절)
 )
 ```
 
@@ -144,6 +144,7 @@ fun start(
     serialId: String,
     appCode: String,
     hostActivity: Activity? = null,
+    server: AdWonServer = AdWonServer.PRODUCTION,
     listener: ReceiverStartListener = ReceiverStartListener {}
 )
 
@@ -161,9 +162,10 @@ fun requestBatteryOptimizationExemption(activity: Activity)
 | `serialId` | 이 수신부(테이블)를 식별하는 시리얼ID. |
 | `appCode` | **(필수)** 호출 앱(파트너)이 SDK 사용 승인 시 발급받은 App Code. **유효하지 않은 값을 넣으면 실제로 거부됩니다.** 정식 App Code는 별도 채널로 발급받으세요. |
 | `hostActivity` | 전달하면 SDK가 부족한 런타임 권한과 배터리 최적화 예외를 이 `Activity` 위에서 자동으로 요청합니다(3절 참조). `null`이면 두 자동 요청을 모두 생략하고 경고 로그만 남기므로, 필요하면 `requestRequiredPermissions()`/`requestBatteryOptimizationExemption()`을 직접 호출해야 합니다. |
+| `server` | 접속할 AdWon 서버 — `AdWonServer.DEVELOPMENT`(개발) 또는 `AdWonServer.PRODUCTION`(상용). **생략하면 상용 서버**입니다. 4.1절 참조. |
 | `listener` | 시작 판정 결과 콜백. **항상 메인 스레드**에서 호출됩니다 — 5절 `ReceiverStartResult` 참조. |
 
-호출 앱이 조정할 수 있는 값은 `serialId`/`appCode`/`hostActivity`/`listener` 네 개뿐입니다.
+호출 앱이 조정할 수 있는 값은 `serialId`/`appCode`/`hostActivity`/`server`/`listener` 다섯 개뿐입니다.
 그 외 신호 판별 기준, 신호 집계 윈도우, 체류/이탈 판정 시간, 방문 레코드 업로드 주기,
 배터리 임계값 등은 모두 배포 시점 상수로 고정되어 있으며, 매장 환경에 맞게 조정이
 필요하면 SDK 쪽에 문의해 주세요.
@@ -192,9 +194,41 @@ fun requestBatteryOptimizationExemption(activity: Activity)
 `receiverDiagnosticLogFile(context): File` — SDK 내부 진단 로그 파일 위치를 알려주는
 top-level 함수. 6.2절 참조.
 
+#### 4.1 개발/상용 서버 선택
+
+SDK는 App Code 검증과 방문 기록 업로드를 AdWon 서버로 보냅니다. 서버는 개발/상용 두 가지이며
+`start()`의 `server`로 고릅니다.
+
+| 값 | 용도 |
+|---|---|
+| `AdWonServer.DEVELOPMENT` | 연동 개발·테스트 중 |
+| `AdWonServer.PRODUCTION` (기본값) | 실제 매장 운영 |
+
+- **App Code는 서버마다 따로 발급됩니다.** 개발 서버에는 개발용 App Code를, 상용 서버에는
+  상용 App Code를 넣어야 합니다. 서버와 App Code가 맞지 않으면 `Rejected`로 거부됩니다.
+- `server`를 생략하면 상용 서버로 접속합니다. 개발 중에는 반드시 `AdWonServer.DEVELOPMENT`를
+  명시하세요.
+- 고른 서버는 세션 설정과 함께 저장돼, 재부팅 후 자동 재시작될 때도 같은 서버를 씁니다.
+- 서버를 바꾸려면 새 서버와 그 서버의 App Code로 `start()`를 다시 호출하면 됩니다.
+
+빌드 타입에 따라 자동으로 나누는 예시:
+
+```kotlin
+sdk.start(
+    serialId = "table-01",
+    appCode = if (BuildConfig.DEBUG) DEV_APP_CODE else PROD_APP_CODE,
+    hostActivity = this,
+    server = if (BuildConfig.DEBUG) AdWonServer.DEVELOPMENT else AdWonServer.PRODUCTION
+)
+```
+
+(여기서 `BuildConfig`는 SDK가 아니라 **호스트 앱 자신의** `BuildConfig`입니다.)
+
 ### 5. 데이터 모델
 
 ```kotlin
+enum class AdWonServer { DEVELOPMENT, PRODUCTION } // 4.1절
+
 fun interface ReceiverStartListener {
     fun onResult(result: ReceiverStartResult)
 }
@@ -299,7 +333,7 @@ context.startActivity(Intent.createChooser(sendIntent, "진단 로그 공유"))
 ### 7. 배포 산출물 및 난독화 (ProGuard/R8)
 
 수신부 SDK의 release AAR은 R8로 압축·난독화되어 배포됩니다. 4절에서 설명한 퍼블릭
-API(파사드 클래스, `ReceiverStartResult`/`ReceiverStartListener`,
+API(파사드 클래스, `AdWonServer`, `ReceiverStartResult`/`ReceiverStartListener`,
 `Logger`/`NoOpLogger`/`LogcatLogger`, 판별 로직 `core` 패키지 등)는 이름이 그대로
 유지되고, 그 외 내부 구현 클래스는 이름이 스크램블된 채로 담겨 있습니다.
 
@@ -326,10 +360,8 @@ API(파사드 클래스, `ReceiverStartResult`/`ReceiverStartListener`,
 
 | 연동규격서 버전 | SDK 배포 버전(AAR) | 비고 |
 |---|---|---|
-| v1.0 | 1.0.0 | 최초 공개 배포. **테스트(개발) 서버를 사용하는 버전** — 위 상단 안내 참조. |
-
-> **참고**: 상용 서버로 전환된 버전이 나오면 이 표에 새 행으로 추가되고 별도로
-> 공지됩니다. 그 전까지 연동을 시작하신 분들은 새 버전 공지 시 AAR 교체가 필요합니다.
+| v1.0 | 1.0.0 | 최초 공개 배포. 개발 서버로만 통신하도록 고정된 버전. |
+| v1.1 | 1.0.1 | 상용 서버 개통 — `start()`에 `server`(개발/상용 선택, 기본값 상용) 추가(3·4·4.1·5절). **1.0.0에서 올리면서 개발 서버를 계속 쓰려면 `server = AdWonServer.DEVELOPMENT`를 명시해야 합니다.** |
 
 ### 부록 A. 샘플 앱
 
